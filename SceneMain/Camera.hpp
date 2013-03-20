@@ -1,0 +1,17 @@
+#ifndef CAMERA_HPP
+#define CAMERA_HPP
+#include "tools.hpp"
+
+class Camera { //Just rotates in a human-like manner. Thought to be used with GameObjects and derived types
+	public:
+		Camera();
+		~Camera();
+		void rotateX(float deg);
+		void rotateY(float deg);
+
+		vec2f rot;
+		vec3f pos;
+		vec3f selectedColor;
+};
+
+#endif // CAMERA_HPP
