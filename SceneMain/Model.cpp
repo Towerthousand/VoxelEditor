@@ -1,7 +1,7 @@
-#include "Chunk.hpp"
+#include "Model.hpp"
 #include "Camera.hpp"
 
-Chunk::Chunk() :
+Model::Model() :
 	outOfView(false), markedForRedraw(false),
 	playerTargetsBlock(false), last(0,0,0), targetedBlock(0,0,0),
 	cubes(WORLDWIDTH,std::vector<std::vector<Cube> >
@@ -10,10 +10,10 @@ Chunk::Chunk() :
 	VBOID(1) {
 }
 
-Chunk::~Chunk() {
+Model::~Model() {
 }
 
-bool Chunk::getOutOfBounds(int x, int y, int z) const {
+bool Model::getOutOfBounds(int x, int y, int z) const {
 	if (x >= WORLDWIDTH || x < 0
 		|| y >= WORLDHEIGHT || y < 0
 		|| z >= WORLDWIDTH || z< 0)
@@ -21,20 +21,20 @@ bool Chunk::getOutOfBounds(int x, int y, int z) const {
 	return false;
 }
 
-Cube Chunk::getCube(int x, int y, int z) const {
+Cube Model::getCube(int x, int y, int z) const {
 	if (getOutOfBounds(x,y,z))
 		return Cube(true,vec3f(0,0,0));
 	return cubes[x][y][z];
 }
 
-void Chunk::setCube(int x, int y, int z, Cube c) {
+void Model::setCube(int x, int y, int z, Cube c) {
 	if (getOutOfBounds(x,y,z))
 		return;
 	markedForRedraw = true;
 	cubes[x][y][z] = c;
 }
 
-void Chunk::update(float deltaTime) {
+void Model::update(float deltaTime) {
 	//empty arrays and re-do them
 	markedForRedraw = false;
 	renderData.resize(0);
@@ -50,7 +50,7 @@ void Chunk::update(float deltaTime) {
 	makeVbo();
 }
 
-void Chunk::draw() const {
+void Model::draw() const {
 	glBindBuffer(GL_ARRAY_BUFFER, VBOID);
 	glPushMatrix();
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -70,7 +70,7 @@ void Chunk::draw() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THIS COMPACT
+void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THIS COMPACT
 	float lindA = 1.0,lindB = 1.0,lindC = 1.0,lindD = 1.0, lindE = 1.0;
 	//STRUCTURE PER VERTEX: Vx,Vy,Vz,
 	//						Nx,Ny,Nz,
@@ -87,10 +87,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x+1,y,z+1).isAir + getCube(x+1,y-1,z+1).isAir)/4.0;
 		lindD = (getCube(x,y,z+1).isAir + getCube(x,y+1,z+1).isAir +
 				 getCube(x+1,y,z+1).isAir + getCube(x+1,y+1,z+1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x,y,z+1).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x,y,z+1).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x,y,z+1).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x,y,z+1).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,0,-1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
@@ -118,10 +118,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x-1,y,z-1).isAir + getCube(x-1,y-1,z-1).isAir)/4.0;
 		lindD = (getCube(x,y,z-1).isAir + getCube(x,y+1,z-1).isAir +
 				 getCube(x-1,y,z-1).isAir + getCube(x-1,y+1,z-1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x,y,z-1).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x,y,z-1).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x,y,z-1).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x,y,z-1).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x    , y+1.0, z    , 0,0,-1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
@@ -149,10 +149,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x+1,y,z-1).isAir + getCube(x+1,y-1,z-1).isAir)/4.0;
 		lindD = (getCube(x+1,y,z).isAir + getCube(x+1,y+1,z).isAir +
 				 getCube(x+1,y,z-1).isAir + getCube(x+1,y+1,z-1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x+1.0, y+1.0, z    , -1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
@@ -180,10 +180,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x-1,y,z+1).isAir + getCube(x-1,y-1,z+1).isAir)/4.0;
 		lindD = (getCube(x-1,y,z).isAir + getCube(x-1,y+1,z).isAir +
 				 getCube(x-1,y,z+1).isAir + getCube(x-1,y+1,z+1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x-1,y,z).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x-1,y,z).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x-1,y,z).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x-1,y,z).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x    , y+1.0, z+1.0, -1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
@@ -211,10 +211,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x,y-1,z-1).isAir + getCube(x-1,y-1,z-1).isAir)/4.0;
 		lindD = (getCube(x,y-1,z).isAir + getCube(x+1,y-1,z).isAir +
 				 getCube(x,y-1,z-1).isAir + getCube(x+1,y-1,z-1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x,y-1,z).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x,y-1,z).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x,y-1,z).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x,y-1,z).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x    , y    , z    , 0,-1,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
@@ -242,10 +242,10 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x,y+1,z-1).isAir + getCube(x+1,y+1,z-1).isAir)/4.0;
 		lindD = (getCube(x,y+1,z).isAir + getCube(x-1,y+1,z).isAir +
 				 getCube(x,y+1,z-1).isAir + getCube(x-1,y+1,z-1).isAir)/4.0;
-		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/3.0);
-		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/3.0);
-		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/3.0);
-		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/3.0);
+		lindA = std::fmax(lindA,getCube(x+1,y,z).isAir/4.0);
+		lindB = std::fmax(lindB,getCube(x+1,y,z).isAir/4.0);
+		lindC = std::fmax(lindC,getCube(x+1,y,z).isAir/4.0);
+		lindD = std::fmax(lindD,getCube(x+1,y,z).isAir/4.0);
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
 		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,1,0 , lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
@@ -266,7 +266,7 @@ void Chunk::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 	}
 }
 
-void Chunk::makeVbo() {
+void Model::makeVbo() {
 	glGenBuffers(1, (GLuint*) &VBOID);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOID);
 	glBufferData(GL_ARRAY_BUFFER, renderData.size()*sizeof(Vertex), &renderData[0], GL_STATIC_DRAW);
@@ -275,7 +275,7 @@ void Chunk::makeVbo() {
 //Based on: Fast Voxel Traversal Algorithm for Ray Tracing
 //By: John Amanatides et al.
 //Implemented by Jordi "BuD" Santiago Provencio
-void Chunk::traceView(const Camera& player, float tMax) {
+void Model::traceView(const Camera& player, float tMax) {
 	if (!getOutOfBounds(floor(player.pos.x),floor(player.pos.y),floor(player.pos.z)) &&
 		!getCube(floor(player.pos.x),floor(player.pos.y),floor(player.pos.z)).isAir) {
 		playerTargetsBlock = true;

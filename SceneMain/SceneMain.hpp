@@ -2,7 +2,7 @@
 #define SCENEMAIN_HPP
 #include "Scene.hpp"
 #include "Camera.hpp"
-#include "Chunk.hpp"
+#include "Model.hpp"
 
 class SceneMain : public Scene {
 	public:
@@ -24,7 +24,7 @@ class SceneMain : public Scene {
 	private:
 		bool loadResources();
 
-		Chunk world;
+		Model world;
 		Camera player;
 		sf::Mouse mouse;
 		float debugCounter;

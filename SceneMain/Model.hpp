@@ -3,10 +3,10 @@
 #include "tools.hpp"
 
 class Camera;
-class Chunk { //16*16*128
+class Model { //16*16*128
 	public:
-		Chunk();
-		~Chunk();
+		Model();
+		~Model();
 		//main
 		void update(float deltaTime);
 		void draw() const;

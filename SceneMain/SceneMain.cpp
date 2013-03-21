@@ -18,6 +18,9 @@ bool SceneMain::init() {
 
 	if (!loadResources())
 		return false;
+	parent.font().makeText("colorR","",20,vec2f(10,110),sf::Color::White,sf::Text::Bold,false);
+	parent.font().makeText("colorG","",20,vec2f(10,130),sf::Color::White,sf::Text::Bold,false);
+	parent.font().makeText("colorB","",20,vec2f(10,150),sf::Color::White,sf::Text::Bold,false);
 	parent.font().makeText("posX","",20,vec2f(10,10),sf::Color::White,sf::Text::Bold,false);
 	parent.font().makeText("posY","",20,vec2f(10,30),sf::Color::White,sf::Text::Bold,false);
 	parent.font().makeText("posZ","",20,vec2f(10,50),sf::Color::White,sf::Text::Bold,false);
@@ -64,6 +67,9 @@ void SceneMain::draw() const {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glFlush();
 
+	parent.font().getText("colorR").setString("R: " + toString(player.selectedColor.x));
+	parent.font().getText("colorG").setString("G: " + toString(player.selectedColor.y));
+	parent.font().getText("colorB").setString("B: " + toString(player.selectedColor.z));
 	parent.font().getText("posX").setString("X: " + toString(player.pos.x));
 	parent.font().getText("posY").setString("Y: " + toString(player.pos.y));
 	parent.font().getText("posZ").setString("Z: " + toString(player.pos.z));
@@ -73,6 +79,9 @@ void SceneMain::draw() const {
 	//SFML draws (until window.popGLStates())
 	glDisable(GL_CULL_FACE);
 	parent.getWindow().pushGLStates();
+	parent.getWindow().draw(parent.font().getText("colorR"));
+	parent.getWindow().draw(parent.font().getText("colorG"));
+	parent.getWindow().draw(parent.font().getText("colorB"));
 	parent.getWindow().draw(parent.font().getText("posX"));
 	parent.getWindow().draw(parent.font().getText("posY"));
 	parent.getWindow().draw(parent.font().getText("posZ"));
@@ -87,6 +96,7 @@ void SceneMain::onKeyPressed(float deltaTime, const sf::Keyboard::Key& key) {
 	switch(key) {
 		case sf::Keyboard::Escape:
 			parent.close();
+			break;
 		default:
 			break;
 	}
@@ -117,6 +127,24 @@ void SceneMain::onKeyDown(float deltaTime, const sf::Keyboard::Key &key) {
 			break;
 		case sf::Keyboard::LShift:
 			player.pos.y -= vel*deltaTime;
+			break;
+		case sf::Keyboard::Numpad1:
+			player.selectedColor.x -= 0.001;
+			break;
+		case sf::Keyboard::Numpad2:
+			player.selectedColor.y -= 0.001;
+			break;
+		case sf::Keyboard::Numpad3:
+			player.selectedColor.z -= 0.001;
+			break;
+		case sf::Keyboard::Numpad7:
+			player.selectedColor.x += 0.001;
+			break;
+		case sf::Keyboard::Numpad8:
+			player.selectedColor.y += 0.001;
+			break;
+		case sf::Keyboard::Numpad9:
+			player.selectedColor.z += 0.001;
 			break;
 		default:
 			break;
