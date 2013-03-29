@@ -1,6 +1,6 @@
 #ifndef Texture_HPP
 #define Texture_HPP
-#include "tools.hpp"
+#include "../tools.hpp"
 
 class Texture
 {

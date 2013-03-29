@@ -1,6 +1,6 @@
 #ifndef EFFECT_HPP
 #define EFFECT_HPP
-#include "tools.hpp"
+#include "../tools.hpp"
 
 class Effect
 {

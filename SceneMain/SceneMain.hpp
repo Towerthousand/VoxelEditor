@@ -1,6 +1,6 @@
 #ifndef SCENEMAIN_HPP
 #define SCENEMAIN_HPP
-#include "Scene.hpp"
+#include "../Scene.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
 

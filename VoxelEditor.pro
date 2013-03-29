@@ -10,14 +10,14 @@ SOURCES += \
     $$PWD/tools.cpp \
     $$PWD/SceneMain/SceneMain.cpp \
     $$PWD/SceneMain/Camera.cpp \
-	$$PWD/SceneMain/Model.cpp \
+    $$PWD/SceneMain/Model.cpp \
     $$PWD/graphics/FontManager.cpp \
     $$PWD/graphics/Texture.cpp \
     $$PWD/graphics/TextureManager.cpp \
     $$PWD/audio/AudioManager.cpp \
     $$PWD/audio/Effect.cpp \
     $$PWD/audio/Music.cpp \
-	$$PWD/input/InputManager.cpp \
+    $$PWD/input/InputManager.cpp
 
 HEADERS += \
     $$PWD/Scene.hpp \
@@ -25,7 +25,7 @@ HEADERS += \
     $$PWD/tools.hpp \
     $$PWD/SceneMain/SceneMain.hpp \
     $$PWD/SceneMain/Camera.hpp \
-	$$PWD/SceneMain/Model.hpp \
+    $$PWD/SceneMain/Model.hpp \
     $$PWD/graphics/FontManager.hpp \
     $$PWD/graphics/Texture.hpp \
     $$PWD/graphics/TextureManager.hpp \
@@ -33,4 +33,4 @@ HEADERS += \
     $$PWD/audio/Effect.hpp \
     $$PWD/audio/Music.hpp \
     $$PWD/Math.hpp \
-	$$PWD/input/InputManager.hpp \
+    $$PWD/input/InputManager.hpp \

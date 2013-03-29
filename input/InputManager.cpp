@@ -155,7 +155,7 @@ void InputManager::pressMouse(sf::Mouse::Button key) {
 
 void InputManager::releaseMouse(sf::Mouse::Button key) {
 	mouseReleased[key] = true;
-	mouseDown[key] = false;
+	mouseDown[key] = false;e
 }
 
 bool InputManager::isMousePressed(sf::Mouse::Button key) {

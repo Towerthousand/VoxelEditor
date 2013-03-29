@@ -48,7 +48,6 @@ void SceneMain::update(float deltaTime) {
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
-
 	if(world.markedForRedraw)
 		world.update(deltaTime);
 	world.traceView(player,100);
@@ -160,12 +159,12 @@ void SceneMain::onKeyReleased(float deltaTime, const sf::Keyboard::Key &key) {
 
 void SceneMain::onMouseButtonPressed(float deltaTime, const sf::Mouse::Button& button) {
 	switch(button) {
-		case sf::Mouse::Left: //delete block
-			if(world.playerTargetsBlock)
-				world.setCube(world.targetedBlock.x,world.targetedBlock.y,world.targetedBlock.z,Cube(true,vec3f(0,0,0)));
+		case sf::Mouse::Left: //delete Cube
+			if(world.playerTargetsCube)
+				world.setCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,Cube(true,vec3f(0,0,0)));
 			break;
-		case sf::Mouse::Right: //place block
-			if(world.playerTargetsBlock)
+		case sf::Mouse::Right: //place Cube
+			if(world.playerTargetsCube)
 				world.setCube(world.last.x,world.last.y,world.last.z,Cube(false,player.selectedColor));
 			break;
 		default:

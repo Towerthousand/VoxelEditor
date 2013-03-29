@@ -1,6 +1,6 @@
 #ifndef FontManager_HPP
 #define FontManager_HPP
-#include "tools.hpp"
+#include "../tools.hpp"
 class FontManager {
 	public:
 		FontManager();

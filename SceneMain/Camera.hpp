@@ -1,6 +1,6 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include "tools.hpp"
+#include "../tools.hpp"
 
 class Camera { //Just rotates in a human-like manner. Thought to be used with GameObjects and derived types
 	public:

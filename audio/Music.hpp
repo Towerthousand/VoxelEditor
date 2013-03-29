@@ -1,6 +1,6 @@
 #ifndef MUSIC_HPP
 #define MUSIC_HPP
-#include "tools.hpp"
+#include "../tools.hpp"
 
 class Music
 {
