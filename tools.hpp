@@ -3,7 +3,6 @@
 
 #define GL_GLEXT_PROTOTYPES 1
 #include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/OpenGL.hpp>
@@ -15,6 +14,8 @@
 #include <vector>
 #include <cmath>
 #include <queue>
+#include <Qt>
+#include <algorithm>
 #include "Math.hpp"
 
 typedef sf::Vector3<float> vec3f;
@@ -35,10 +36,19 @@ struct Vertex {
 		cr,cg,cb,ca;
 };
 
+struct CubeFileFormat;
 struct Cube {
-		Cube (bool isAir, vec3f color) : isAir(isAir), color(color) {}
+		Cube (bool isAir = false, vec3f color = vec3f(0,0,0));
+		Cube (const CubeFileFormat& c);
 		bool isAir;
 		vec3f color;
+};
+
+struct CubeFileFormat {
+		CubeFileFormat(const Cube &c);
+
+		unsigned char r, g, b;
+		bool isAir;
 };
 
 //prototype random functions here (define in tools.cpp). Inlines go here too
@@ -47,17 +57,15 @@ inline void outLog(const std::string& msg) {
 }
 std::string toString(float num);
 
-#define WINDOW_TITLE "VoxelGame"
-#define CONTEXT_SETTINGS_OPENGL sf::ContextSettings(32,32,0,3,0)
 #define MINLIGHT 1
 #define DEG_TO_RAD ((2*M_PI)/360.0)
 #define FOV 60.0 //degrees
 #define ZNEAR 0.01f
 #define ZFAR 500.0f
-extern int SCRWIDTH; //1366
-extern int SCRHEIGHT; //768
-extern bool WINDOWFOCUS;
+extern int SCRHEIGHT;
+extern int SCRWIDTH;
 extern int WORLDHEIGHT;
 extern int WORLDWIDTH;
+extern int WORLDDEPTH;
 
 #endif // TOOLS_HPP

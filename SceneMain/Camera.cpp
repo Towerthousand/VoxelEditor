@@ -5,7 +5,7 @@
 // and is thougt of as a no-fly, fps kind of view. Tweak it!
 //
 
-Camera::Camera() : rot(0,0), pos(0,0,0), selectedColor(1,0,0) {
+Camera::Camera() : rot(0,125), pos(-1,1.3,-1) {
 }
 
 Camera::~Camera() {

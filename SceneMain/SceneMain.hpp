@@ -12,13 +12,13 @@ class SceneMain : public Scene {
 		bool init();
 		void update(float deltaTime);
 		void draw() const;
-		void onKeyPressed(float deltaTime, const sf::Keyboard::Key &key);
-		void onKeyDown(float deltaTime, const sf::Keyboard::Key &key);
-		void onKeyReleased(float deltaTime, const sf::Keyboard::Key &key);
-		void onMouseButtonPressed(float deltaTime, const sf::Mouse::Button &button);
-		void onMouseButtonDown(float deltaTime, const sf::Mouse::Button &button);
-		void onMouseButtonReleased(float deltaTime, const sf::Mouse::Button &button);
-		void onMouseMoved(float deltaTime);
+		void onKeyPressed(float deltaTime, const Qt::Key &key);
+		void onKeyDown(float deltaTime, const Qt::Key &key);
+		void onKeyReleased(float deltaTime, const Qt::Key &key);
+		void onMouseButtonPressed(float deltaTime, const Qt::MouseButton &button);
+		void onMouseButtonDown(float deltaTime, const Qt::MouseButton &button);
+		void onMouseButtonReleased(float deltaTime, const Qt::MouseButton &button);
+		void onMouseMoved(float deltaTime, float dx, float dy);
 		void onClose(); //close scene-wide stuff
 
 	private:
@@ -26,7 +26,6 @@ class SceneMain : public Scene {
 
 		Model world;
 		Camera player;
-		sf::Mouse mouse;
 		float debugCounter;
 		int fpsCount;
 };

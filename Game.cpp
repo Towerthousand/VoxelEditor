@@ -1,17 +1,9 @@
 #include "Game.hpp"
 
 Game::Game() : currentScene(NULL), nextScene(NULL) {
-	window.create(sf::VideoMode(SCRWIDTH,SCRHEIGHT,32), WINDOW_TITLE ,sf::Style::Fullscreen,CONTEXT_SETTINGS_OPENGL);
-	window.setMouseCursorVisible(false);
-	window.setKeyRepeatEnabled(false);
-	window.setVerticalSyncEnabled(false);
-	WINDOWFOCUS = true;
-	glClearColor(180.0/255.0,205.0/255.0,205.0/255.0,1);
 }
 
 Game::~Game() {
-	//GAME DESTRUCTOR is actually a really cool name for the ultimate boss of a geeky
-	//game about metagame. Nais. GAME CONSTRUCTOR is not a good hero name, though.
 }
 
 // Init non-resource, general game frame stuff here.
@@ -24,6 +16,7 @@ bool Game::init() {
 	isRunning = true;
 
 	//GL stuff..
+	glClearColor(180.0/255.0,205.0/255.0,205.0/255.0,1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ALPHA_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -41,19 +34,7 @@ bool Game::init() {
 
 // Load scene-independent resources here, return false if failed to load
 bool Game::loadResources () {
-	if (!fontManager.globalFont.loadFromFile("resources/helvetica.ttf"))
-		return false;
 	return true;
-}
-
-// CAN'T TOUCH THIS NANANANA NANA NANA (main game loop)
-void Game::run() {
-	sf::Clock clock;
-	while (isRunning) {
-		float deltaTime = clock.restart().asSeconds();
-		update(deltaTime);
-		draw();
-	}
 }
 
 // 1: Change scene if necessary
@@ -61,7 +42,6 @@ void Game::run() {
 // 3: Process input
 // 4: Update scene
 void Game::update(float deltaTime) {
-
 	//Change scene, initialize it and close if it fails to initialize
 	if (nextScene != NULL) {
 		if (currentScene != NULL)
@@ -75,128 +55,76 @@ void Game::update(float deltaTime) {
 		}
 	}
 
+	//pass the key input to the scene
+	for (std::set<Qt::Key>::iterator it=inputManager.keysPressed.begin(); it!=inputManager.keysPressed.end(); ++it) {
+			onKeyPressed(deltaTime,*it);
+	}
+	for (std::set<Qt::Key>::iterator it=inputManager.keysDown.begin(); it!=inputManager.keysDown.end(); ++it) {
+			onKeyDown(deltaTime,*it);
+	}
+	for (std::set<Qt::Key>::iterator it=inputManager.keysReleased.begin(); it!=inputManager.keysReleased.end(); ++it) {
+			onKeyReleased(deltaTime,*it);
+	}
+	//pass the mouse input to the scene
+	if(inputManager.mouseDisplacement != vec2i(0,0))
+		onMouseMoved(deltaTime,inputManager.mouseDisplacement.x,inputManager.mouseDisplacement.y);
+	for (std::set<Qt::MouseButton>::iterator it=inputManager.mouseButtonsPressed.begin();
+		 it!=inputManager.mouseButtonsPressed.end(); ++it) {
+			onMouseButtonPressed(deltaTime,*it);
+	}
+	for (std::set<Qt::MouseButton>::iterator it=inputManager.mouseButtonsDown.begin();
+		 it!=inputManager.mouseButtonsDown.end(); ++it) {
+			onMouseButtonDown(deltaTime,*it);
+	}
+	for (std::set<Qt::MouseButton>::iterator it=inputManager.mouseButtonsReleased.begin();
+		 it!=inputManager.mouseButtonsReleased.end(); ++it) {
+			onMouseButtonReleased(deltaTime,*it);
+	}
 	//Scene logic updating
 	if (currentScene != NULL)
 		currentScene->update(deltaTime);
-
-	//Check window events. Events handled by main game object (scene-independent):
-	// - Closing window
-	// - Resizing window & viewport
-	// - Updating window focus
-	inputManager.update();
-	sf::Event event;
-	while(window.pollEvent(event)) {
-		switch(event.type) {
-			case sf::Event::Closed:
-				close();
-				break;
-			case sf::Event::Resized:
-				// adjust the viewport when the window is resized
-				SCRWIDTH = event.size.width;
-				SCRHEIGHT = event.size.height;
-				glViewport(0, 0, SCRWIDTH, SCRHEIGHT);
-				glMatrixMode(GL_PROJECTION);
-				glLoadIdentity();
-				gluPerspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-				break;
-			case sf::Event::GainedFocus:
-				WINDOWFOCUS = true;
-				break;
-			case sf::Event::LostFocus:
-				WINDOWFOCUS = false;
-				break;
-			case sf::Event::MouseButtonPressed:
-				inputManager.pressMouse(event.mouseButton.button);
-				break;
-			case sf::Event::MouseButtonReleased:
-				inputManager.releaseMouse(event.mouseButton.button);
-				break;
-			case sf::Event::KeyPressed:
-				inputManager.pressKey(event.key.code);
-				break;
-			case sf::Event::KeyReleased:
-				inputManager.releaseKey(event.key.code);
-				break;
-			default:
-				break;
-		}
-	}
-	onMouseMoved(deltaTime);
-	//pass the key input to the scene
-	for(uint i = 0; i < inputManager.keyPressed.size(); ++i) {
-		if (inputManager.keyPressed[i]) {
-			onKeyPressed(deltaTime,inputManager.keys[i]);
-		}
-	}
-	for(uint i = 0; i < inputManager.keyDown.size(); ++i) {
-		if (inputManager.keyDown[i]) {
-			onKeyDown(deltaTime,inputManager.keys[i]);
-		}
-	}
-	for(uint i = 0; i < inputManager.keyReleased.size(); ++i) {
-		if (inputManager.keyReleased[i]) {
-			onKeyReleased(deltaTime,inputManager.keys[i]);
-		}
-	}
-	//pass the mouse input to the scene
-	for(uint i = 0; i < inputManager.mousePressed.size(); ++i) {
-		if (inputManager.mousePressed[i]) {
-			onMouseButtonPressed(deltaTime,inputManager.mouseButtons[i]);
-		}
-	}
-	for(uint i = 0; i < inputManager.mouseDown.size(); ++i) {
-		if (inputManager.mouseDown[i]) {
-			onMouseButtonDown(deltaTime,inputManager.mouseButtons[i]);
-		}
-	}
-	for(uint i = 0; i < inputManager.mouseReleased.size(); ++i) {
-		if (inputManager.mouseReleased[i]) {
-			onMouseButtonReleased(deltaTime,inputManager.mouseButtons[i]);
-		}
-	}
+	inputManager.update(); //reset input states
 }
 
 // Draw scene
 void Game::draw() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (currentScene != NULL)
 		currentScene->draw();
-	window.display();
 }
 
-void Game::onKeyPressed(float deltaTime, const sf::Keyboard::Key &key) {
+void Game::onKeyPressed(float deltaTime, const Qt::Key &key) {
 	if (currentScene != NULL)
 		currentScene->onKeyPressed(deltaTime, key);
 }
 
-void Game::onKeyDown(float deltaTime, const sf::Keyboard::Key &key) {
+void Game::onKeyDown(float deltaTime, const Qt::Key &key) {
 	if (currentScene != NULL)
 		currentScene->onKeyDown(deltaTime, key);
 }
 
-void Game::onKeyReleased(float deltaTime, const sf::Keyboard::Key &key) {
+void Game::onKeyReleased(float deltaTime, const Qt::Key &key) {
 	if (currentScene != NULL)
 		currentScene->onKeyReleased(deltaTime, key);
 }
 
-void Game::onMouseButtonPressed(float deltaTime, const sf::Mouse::Button &button) {
+void Game::onMouseButtonPressed(float deltaTime, const  Qt::MouseButton &button) {
 	if (currentScene != NULL)
 		currentScene->onMouseButtonPressed(deltaTime, button);
 }
 
-void Game::onMouseButtonDown(float deltaTime, const sf::Mouse::Button &button) {
+void Game::onMouseButtonDown(float deltaTime, const Qt::MouseButton &button) {
 	if (currentScene != NULL)
 		currentScene->onMouseButtonDown(deltaTime, button);
 }
 
-void Game::onMouseButtonReleased(float deltaTime, const sf::Mouse::Button &button) {
+void Game::onMouseButtonReleased(float deltaTime, const Qt::MouseButton &button) {
 	if (currentScene != NULL)
 		currentScene->onMouseButtonReleased(deltaTime, button);
 }
 
-void Game::onMouseMoved(float deltaTime) {
+void Game::onMouseMoved(float deltaTime, float dx, float dy) {
 	if (currentScene != NULL)
-		currentScene->onMouseMoved(deltaTime);
+		currentScene->onMouseMoved(deltaTime,dx,dy);
 }
 
 // Whenever you wnat to end the game, you must call this function, not the Scene's onClose(); method
@@ -209,7 +137,6 @@ void Game::close() {
 		currentScene = NULL;
 	}
 	outLog("* EXITING GAME" );
-	window.close();
 	isRunning = false;
 }
 

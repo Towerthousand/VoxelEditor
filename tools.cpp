@@ -1,15 +1,24 @@
 #include "Game.hpp"
 
 //extern'd in tools.hpp
-int SCRWIDTH = sf::VideoMode::getFullscreenModes()[0].width; //1366
-int SCRHEIGHT = sf::VideoMode::getFullscreenModes()[0].height; //768
-bool WINDOWFOCUS = false;
-int WORLDHEIGHT = 16;
-int WORLDWIDTH = 16;
+int WORLDHEIGHT = 64;
+int WORLDWIDTH = 64;
+int WORLDDEPTH = 64;
+int SCRHEIGHT = 0;
+int SCRWIDTH = 0;
 
 //implement random functions here
 std::string toString(float num) {
 	std::stringstream ss;
 	ss << num;
 	return ss.str();
+}
+
+Cube::Cube(bool isAir, vec3f color) : isAir(isAir), color(color) {
+}
+
+Cube::Cube (const CubeFileFormat& c) : isAir(c.isAir) , color(c.r/255.0,c.g/255.0,c.b/255.0){
+}
+
+CubeFileFormat::CubeFileFormat(const Cube &c): r(c.color.x*255), g(c.color.y*255), b(c.color.z*255), isAir(c.isAir){
 }

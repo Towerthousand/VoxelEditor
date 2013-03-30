@@ -18,25 +18,25 @@ bool SceneMain::init() {
 
 	if (!loadResources())
 		return false;
-	parent.font().makeText("colorR","",20,vec2f(10,110),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("colorG","",20,vec2f(10,130),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("colorB","",20,vec2f(10,150),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("posX","",20,vec2f(10,10),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("posY","",20,vec2f(10,30),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("posZ","",20,vec2f(10,50),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("rotX","",20,vec2f(10,90),sf::Color::White,sf::Text::Bold,false);
-	parent.font().makeText("rotY","",20,vec2f(10,70),sf::Color::White,sf::Text::Bold,false);
-	//Set up GL view
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(FOV, float(SCRWIDTH)/float(SCRHEIGHT), ZNEAR, ZFAR);
-	//Center mouse
-	mouse.setPosition(vec2i(SCRWIDTH/2,SCRHEIGHT/2),parent.getWindow());
 
 	world.setCube(1,1,1,Cube(false,vec3f(1,0,0)));
 	world.setCube(1,2,1,Cube(false,vec3f(0,1,0)));
 	world.setCube(1,3,1,Cube(false,vec3f(0,0,1)));
 	outLog("* Init was succesful" );
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_COLOR_MATERIAL);
+	GLfloat diffuse[] = {0.3, 0.3, 0.3, 1.f};
+	GLfloat ambient[] = {0.2, 0.2, 0.2, 1.f};
+	GLfloat specular[] = {0.1, 0.1, 0.1, 1.f};
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, specular);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
 	return true;
 }
 
@@ -44,16 +44,22 @@ void SceneMain::update(float deltaTime) {
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {
-		parent.font().getText("FPS").setString("FPS: " + toString(fpsCount));
+		outLog("FPS: " + toString(fpsCount));
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
 	if(world.markedForRedraw)
 		world.update(deltaTime);
-	world.traceView(player,100);
+	world.traceView(player.pos
+					,player.rot,
+					100000,
+					parent.input().lastMousePos.x,
+					parent.input().lastMousePos.y);
 }
 
 void SceneMain::draw() const {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	//Move matrix to position (according to player)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -61,137 +67,101 @@ void SceneMain::draw() const {
 	glRotatef(player.rot.y, 0, 1, 0);
 	glTranslatef(-player.pos.x, -player.pos.y, -player.pos.z);
 
+	GLfloat lightpos0[] = {-0.5, 0.7 , -0.3, 0.};
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos0);
+	GLfloat lightpos1[] = {0.4, 0.3 , 0.9, 0.};
+	glLightfv(GL_LIGHT1, GL_POSITION, lightpos1);
+
 	//draws here (openGL)
 	world.draw();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glFlush();
-
-	parent.font().getText("colorR").setString("R: " + toString(player.selectedColor.x));
-	parent.font().getText("colorG").setString("G: " + toString(player.selectedColor.y));
-	parent.font().getText("colorB").setString("B: " + toString(player.selectedColor.z));
-	parent.font().getText("posX").setString("X: " + toString(player.pos.x));
-	parent.font().getText("posY").setString("Y: " + toString(player.pos.y));
-	parent.font().getText("posZ").setString("Z: " + toString(player.pos.z));
-	parent.font().getText("rotY").setString("Rot Y: " + toString(player.rot.y));
-	parent.font().getText("rotX").setString("Rot X: " + toString(player.rot.x));
-
-	//SFML draws (until window.popGLStates())
-	glDisable(GL_CULL_FACE);
-	parent.getWindow().pushGLStates();
-	parent.getWindow().draw(parent.font().getText("colorR"));
-	parent.getWindow().draw(parent.font().getText("colorG"));
-	parent.getWindow().draw(parent.font().getText("colorB"));
-	parent.getWindow().draw(parent.font().getText("posX"));
-	parent.getWindow().draw(parent.font().getText("posY"));
-	parent.getWindow().draw(parent.font().getText("posZ"));
-	parent.getWindow().draw(parent.font().getText("rotX"));
-	parent.getWindow().draw(parent.font().getText("rotY"));
-	parent.getWindow().popGLStates();
-	parent.getWindow().popGLStates();
-	glEnable(GL_CULL_FACE);
 }
 
-void SceneMain::onKeyPressed(float deltaTime, const sf::Keyboard::Key& key) {
+void SceneMain::onKeyPressed(float deltaTime, const Qt::Key& key) {
 	switch(key) {
-		case sf::Keyboard::Escape:
-			parent.close();
+		case Qt::Key_Q:
+			world.saveVoxelization("lol.bin");
+			break;
+		case Qt::Key_E:
+			world.loadVoxelization("lol.bin");
 			break;
 		default:
 			break;
 	}
 }
 
-void SceneMain::onKeyDown(float deltaTime, const sf::Keyboard::Key &key) {
+void SceneMain::onKeyDown(float deltaTime, const Qt::Key &key) {
 	const float vel = 5.0f;
 	vec2f dir(sin(player.rot.y*DEG_TO_RAD), -cos(player.rot.y*DEG_TO_RAD));
 	switch(key) {
-		case sf::Keyboard::W:
+		case Qt::Key_W:
 			player.pos.x += dir.x*vel*deltaTime;
 			player.pos.z += dir.y*vel*deltaTime;
 			break;
-		case sf::Keyboard::S:
+		case Qt::Key_S:
 			player.pos.x += -dir.x*vel*deltaTime;
 			player.pos.z += -dir.y*vel*deltaTime;
 			break;
-		case sf::Keyboard::A:
+		case Qt::Key_A:
 			player.pos.x += dir.y*vel*deltaTime;
 			player.pos.z += -dir.x*vel*deltaTime;
 			break;
-		case sf::Keyboard::D:
+		case Qt::Key_D:
 			player.pos.x += -dir.y*vel*deltaTime;
 			player.pos.z += dir.x*vel*deltaTime;
 			break;
-		case sf::Keyboard::Space:
+		case Qt::Key_Space:
 			player.pos.y += vel*deltaTime;
 			break;
-		case sf::Keyboard::LShift:
+		case Qt::Key_Shift:
 			player.pos.y -= vel*deltaTime;
-			break;
-		case sf::Keyboard::Numpad1:
-			player.selectedColor.x -= 0.001;
-			break;
-		case sf::Keyboard::Numpad2:
-			player.selectedColor.y -= 0.001;
-			break;
-		case sf::Keyboard::Numpad3:
-			player.selectedColor.z -= 0.001;
-			break;
-		case sf::Keyboard::Numpad7:
-			player.selectedColor.x += 0.001;
-			break;
-		case sf::Keyboard::Numpad8:
-			player.selectedColor.y += 0.001;
-			break;
-		case sf::Keyboard::Numpad9:
-			player.selectedColor.z += 0.001;
 			break;
 		default:
 			break;
 	}
 }
 
-void SceneMain::onKeyReleased(float deltaTime, const sf::Keyboard::Key &key) {
+void SceneMain::onKeyReleased(float deltaTime, const Qt::Key &key) {
 	switch(key) {
 		default:
 			break;
 	}
 }
 
-void SceneMain::onMouseButtonPressed(float deltaTime, const sf::Mouse::Button& button) {
+void SceneMain::onMouseButtonPressed(float deltaTime, const Qt::MouseButton& button) {
 	switch(button) {
-		case sf::Mouse::Left: //delete Cube
+		case Qt::LeftButton: //delete Cube
 			if(world.playerTargetsCube)
 				world.setCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,Cube(true,vec3f(0,0,0)));
 			break;
-		case sf::Mouse::Right: //place Cube
+		case Qt::RightButton: //place Cube
 			if(world.playerTargetsCube)
-				world.setCube(world.last.x,world.last.y,world.last.z,Cube(false,player.selectedColor));
+				world.setCube(world.last.x,world.last.y,world.last.z,Cube(false,parent.input().colors[parent.input().selectedColor]));
 			break;
 		default:
 			break;
 	}
 }
 
-void SceneMain::onMouseButtonDown(float deltaTime, const sf::Mouse::Button& button) {
+void SceneMain::onMouseButtonDown(float deltaTime, const Qt::MouseButton& button) {
 	switch(button) {
 		default:
 			break;
 	}
 }
 
-void SceneMain::onMouseButtonReleased(float deltaTime, const sf::Mouse::Button& button) {
+void SceneMain::onMouseButtonReleased(float deltaTime, const Qt::MouseButton& button) {
 	switch(button) {
 		default:
 			break;
 	}
 }
 
-void SceneMain::onMouseMoved(float deltaTime) {
-	vec2i mousePos = mouse.getPosition(parent.getWindow());//vec2i(event.mouseMove.x,event.mouseMove.y);
-	if ((mousePos.x != SCRHEIGHT/2 || mousePos.y != SCRWIDTH/2) && WINDOWFOCUS){
-		player.rotateX(((float)mousePos.y - SCRHEIGHT/2)*0.5);
-		player.rotateY(((float)mousePos.x - SCRWIDTH/2)*0.5);
-		mouse.setPosition(vec2i(SCRWIDTH/2, SCRHEIGHT/2),parent.getWindow());
+void SceneMain::onMouseMoved(float deltaTime, float dx, float dy) {
+	if(parent.input().mouseButtonsDown.find(Qt::MiddleButton) != parent.input().mouseButtonsDown.end()) {
+		player.rotateX(dy*0.5);
+		player.rotateY(dx*0.5);
 	}
 }
 

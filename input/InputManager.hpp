@@ -6,28 +6,34 @@ class InputManager {
 	public:
 		InputManager();
 		~InputManager();
-		void pressKey(sf::Keyboard::Key key);
-		void releaseKey(sf::Keyboard::Key key);
-		void pressMouse(sf::Mouse::Button key);
-		void releaseMouse(sf::Mouse::Button key);
+		void pressKey(Qt::Key key);
+		void releaseKey(Qt::Key key);
+		void pressMouse(Qt::MouseButton key);
+		void releaseMouse(Qt::MouseButton key);
+		void moveMouse(int dx, int dy);
+		void setMousePos(int x, int y);
+		void gainFocus();
+		void loseFocus();
+
+		void resizeWindow(int newHeight, int newWidth);
+
 		void update();
 
-		bool isKeyPressed(sf::Keyboard::Key key);
-		bool isKeyDown(sf::Keyboard::Key key);
-		bool isKeyReleased(sf::Keyboard::Key key);
-		bool isMousePressed(sf::Mouse::Button key);
-		bool isMouseDown(sf::Mouse::Button key);
-		bool isMouseReleased(sf::Mouse::Button key);
+		std::set<Qt::Key> keysPressed;
+		std::set<Qt::Key> keysDown;
+		std::set<Qt::Key> keysReleased;
 
-		std::vector<bool> keyPressed; //is being pressed
-		std::vector<bool> keyReleased; //is being releassed
-		std::vector<bool> keyDown; //is being held down
-		sf::Keyboard::Key keys[101];
+		std::set<Qt::MouseButton> mouseButtonsPressed;
+		std::set<Qt::MouseButton> mouseButtonsDown;
+		std::set<Qt::MouseButton> mouseButtonsReleased;
 
-		std::vector<bool> mousePressed; //is being pressed
-		std::vector<bool> mouseReleased; //is being releassed
-		std::vector<bool> mouseDown; //is being held down
-		sf::Mouse::Button mouseButtons[5];
+		vec2i lastMousePos;
+		vec2i mouseDisplacement;
+
+		bool focus;
+
+		std::vector<vec3f> colors;
+		int selectedColor;
 };
 
 #endif // INPUTMANAGER_HPP

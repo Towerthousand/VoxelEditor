@@ -11,7 +11,6 @@ class Camera { //Just rotates in a human-like manner. Thought to be used with Ga
 
 		vec2f rot;
 		vec3f pos;
-		vec3f selectedColor;
 };
 
 #endif // CAMERA_HPP

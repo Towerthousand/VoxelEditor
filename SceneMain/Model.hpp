@@ -15,7 +15,9 @@ class Model { //16*16*128
 		bool getOutOfBounds(int x, int y, int z) const;
 		Cube getCube(int x, int y, int z) const;
 		void setCube(int x, int y, int z, Cube c);
-		void traceView(const Camera& player, float tMax);
+		void traceView(const vec3f &pos, const vec2f &rot, float tMax, float xMousePos, float yMousepos);
+		bool saveVoxelization(std::string filePath);
+		bool loadVoxelization(std::string filePath);
 
 		bool markedForRedraw;
 		bool playerTargetsCube; //is the view of the player colliding with a Cube that's not air?
@@ -27,12 +29,12 @@ class Model { //16*16*128
 		void pushCubeToArray(int x, int y, int z);
 		void makeVbo();
 		void drawCube(int x, int y, int z) const;
+		void drawWorldBox() const;
 
 		int VBOID;
 
 		std::vector<Vertex> renderData;
-		static const int vertexPoints[72][3]; //ESTO ES SIDA
-		static const float colorIndexes[72][4]; //Y ESTO CANCER DE SIDA
+		static const int vertexPoints[24][3]; //ESTO ES SIDA, A.K.A LAS LINEAS DE LOS VERTICES DE UN CUBO
 };
 
 #endif // CHUNK_HPP
