@@ -55,6 +55,7 @@ void SceneMain::update(float deltaTime) {
 					100000,
 					parent.input().lastMousePos.x,
 					parent.input().lastMousePos.y);
+	manageUIMenuEvents();
 }
 
 void SceneMain::draw() const {
@@ -80,12 +81,6 @@ void SceneMain::draw() const {
 
 void SceneMain::onKeyPressed(float deltaTime, const Qt::Key& key) {
 	switch(key) {
-		case Qt::Key_Q:
-			world.saveVoxelization("lol.bin");
-			break;
-		case Qt::Key_E:
-			world.loadVoxelization("lol.bin");
-			break;
 		default:
 			break;
 	}
@@ -130,14 +125,36 @@ void SceneMain::onKeyReleased(float deltaTime, const Qt::Key &key) {
 }
 
 void SceneMain::onMouseButtonPressed(float deltaTime, const Qt::MouseButton& button) {
-	switch(button) {
-		case Qt::LeftButton: //delete Cube
-			if(world.playerTargetsCube)
-				world.setCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,Cube(true,vec3f(0,0,0)));
+	switch (parent.input().mode) {
+		case InputManager::STANDARD:
+			switch(button) {
+				case Qt::LeftButton: //delete Cube
+					if(world.playerTargetsCube)
+						world.setCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,Cube(true,vec3f(0,0,0)));
+					break;
+				case Qt::RightButton: //place Cube
+					if(world.playerTargetsCube)
+						world.setCube(world.last.x,world.last.y,world.last.z,Cube(false,parent.input().colors[parent.input().selectedColor]));
+					break;
+				default:
+					break;
+			}
 			break;
-		case Qt::RightButton: //place Cube
-			if(world.playerTargetsCube)
-				world.setCube(world.last.x,world.last.y,world.last.z,Cube(false,parent.input().colors[parent.input().selectedColor]));
+		case InputManager::SELECTION:
+			switch(button) {
+				default:
+					break;
+			}
+			break;
+		case InputManager::PAINT:
+			switch(button) {
+				case Qt::LeftButton: //paint batch
+					if(world.playerTargetsCube)
+						world.paintCubePatch(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,parent.input().colors[parent.input().selectedColor]);
+					break;
+				default:
+					break;
+			}
 			break;
 		default:
 			break;
@@ -167,4 +184,13 @@ void SceneMain::onMouseMoved(float deltaTime, float dx, float dy) {
 
 void SceneMain::onClose() {
 	outLog("* Closing scene: Main" );
+}
+
+void SceneMain::manageUIMenuEvents() {
+	if(parent.input().openFileString != "") {
+		world.loadVoxelization(parent.input().openFileString);
+	}
+	if(parent.input().saveFileString != "") {
+		world.saveVoxelization(parent.input().saveFileString);
+	}
 }

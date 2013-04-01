@@ -38,6 +38,16 @@ class MainWindow : public QMainWindow {
 		void on_c8_colorChanged(const QColor & c);
 		void on_c9_colorChanged(const QColor & c);
 
+		void on_actionOpen_triggered();
+		void on_actionSave_triggered();
+
+		void on_paintModeButton_pressed();
+
+
+		void on_editModeButton_pressed();
+
+		void on_selectModeButton_pressed();
+
 	private:
 		Ui::MainWindow *ui;
 };

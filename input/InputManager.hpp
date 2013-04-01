@@ -14,10 +14,8 @@ class InputManager {
 		void setMousePos(int x, int y);
 		void gainFocus();
 		void loseFocus();
-
 		void resizeWindow(int newHeight, int newWidth);
-
-		void update();
+		void update(); //resets frame-specific input
 
 		std::set<Qt::Key> keysPressed;
 		std::set<Qt::Key> keysDown;
@@ -32,8 +30,22 @@ class InputManager {
 
 		bool focus;
 
+		//GUI STUFF
 		std::vector<vec3f> colors;
 		int selectedColor;
+
+		std::string saveFileString;
+		std::string openFileString;
+		std::string importFileString;
+		std::string exportFileString;
+
+		enum editMode {
+			STANDARD = 0,
+			PAINT,
+			SELECTION
+		};
+
+		editMode mode;
 };
 
 #endif // INPUTMANAGER_HPP

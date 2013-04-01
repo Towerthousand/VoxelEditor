@@ -12,6 +12,7 @@ class GLWidget : public QGLWidget {
 		~GLWidget();
 		void set(int option);
 		void setColor(const QColor &color, int option);
+		Game game;
 
 	protected:
 		void initializeGL();
@@ -30,7 +31,6 @@ class GLWidget : public QGLWidget {
 	private:
 		sf::Clock clock;
 		QTimer* timer;
-		Game game;
 		bool focus;
 };
 

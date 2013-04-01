@@ -173,6 +173,10 @@ void Model::traceView(const vec3f &pos, const vec2f &rot, float tMax, float xMou
 bool Model::saveVoxelization(std::string filePath) {
 	std::ofstream file;
 	file.open(filePath.c_str(),std::ios::binary|std::ios::out|std::ios::trunc);
+	if(!file) {
+		outLog("#ERROR Could not save voxelization \"" + filePath + "\"");
+		return false;
+	}
 	CubeFileFormat c(Cube(false,vec3f(0,0,0)));
 	int ww,wh,wd;
 	ww = WORLDWIDTH;
@@ -215,7 +219,6 @@ bool Model::loadVoxelization(std::string filePath) {
 	WORLDWIDTH = ww;
 	WORLDHEIGHT = wh;
 	WORLDDEPTH = wd;
-	outLog(toString(WORLDWIDTH) + " " + toString(WORLDHEIGHT) + " " + toString(WORLDDEPTH));
 	CubeFileFormat c(Cube(false,vec3f(0,0,0)));
 	for(int x = 0; x < WORLDWIDTH; ++x) {
 		for(int y = 0; y < WORLDHEIGHT; ++y) {
@@ -226,6 +229,40 @@ bool Model::loadVoxelization(std::string filePath) {
 		}
 	}
 	markedForRedraw = true;
+	return true;
+}
+
+void Model::paintCube(int x, int y, int z, vec3f newColor) {
+	if (!getCube(x,y,z).isAir && !getOutOfBounds(x,y,z))
+		cubes[x][y][z] = Cube(false,newColor);
+}
+
+void Model::paintCubePatch(int x, int y, int z, vec3f newColor) {
+	std::queue<vec3i> nodes;
+	vec3f lastColor = getCube(x,y,z).color;
+	paintCube(x,y,z,newColor);
+	nodes.push(vec3i(x,y,z));
+	while(!nodes.empty()) {
+		vec3i curr = nodes.front();
+		nodes.pop();
+			processCubePaintBFS(curr, vec3i(1,0,0),lastColor,nodes);
+			processCubePaintBFS(curr, vec3i(-1,0,0),lastColor,nodes);
+			processCubePaintBFS(curr, vec3i(0,1,0),lastColor,nodes);
+			processCubePaintBFS(curr, vec3i(0,-1,0),lastColor,nodes);
+			processCubePaintBFS(curr, vec3i(0,0,1),lastColor,nodes);
+			processCubePaintBFS(curr, vec3i(0,0,-1),lastColor,nodes);
+	}
+	markedForRedraw = true;
+}
+
+void Model::processCubePaintBFS(vec3i src,vec3i offset, vec3f lastColor, std::queue<vec3i>& nodes) {
+	vec3i sub = src+offset;
+	Cube subCube = getCube(sub.x,sub.y,sub.z);
+	Cube srcCube = getCube(src.x,src.y,src.z);
+	if(!subCube.isAir && subCube.color == lastColor && subCube.color != srcCube.color) {
+		nodes.push(sub);
+		paintCube(sub.x,sub.y,sub.z,srcCube.color);
+	}
 }
 
 void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THIS COMPACT

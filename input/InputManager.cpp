@@ -2,7 +2,9 @@
 
 InputManager::InputManager() :
 	lastMousePos(0,0), mouseDisplacement(0,0), focus(false),
-	colors(12,vec3f(0,0,0)), selectedColor(0){ //12 is the number of color buttons
+	colors(12,vec3f(0,0,0)), selectedColor(0),
+	saveFileString(""), openFileString(""), importFileString(""),
+	exportFileString(""), mode(STANDARD){ //12 is the number of color buttons
 }
 
 InputManager::~InputManager() {
@@ -15,6 +17,10 @@ void InputManager::update() {
 	mouseButtonsReleased = std::set<Qt::MouseButton>();
 	lastMousePos += mouseDisplacement;
 	mouseDisplacement = vec2i(0,0);
+	saveFileString = "";
+	openFileString = "";
+	importFileString = "";
+	exportFileString = "";
 }
 
 void InputManager::pressKey(Qt::Key key) {

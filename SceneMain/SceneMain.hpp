@@ -20,6 +20,7 @@ class SceneMain : public Scene {
 		void onMouseButtonReleased(float deltaTime, const Qt::MouseButton &button);
 		void onMouseMoved(float deltaTime, float dx, float dy);
 		void onClose(); //close scene-wide stuff
+		void manageUIMenuEvents();
 
 	private:
 		bool loadResources();

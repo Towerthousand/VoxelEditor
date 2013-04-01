@@ -16,7 +16,6 @@ INCLUDEPATH += $$PWD/
 QMAKE_CXXFLAGS += -std=c++11
 CXX_FLAGS += -O2
 
-HEADERS  +=
 SOURCES += \
 	$$PWD/Game.cpp \
 	$$PWD/tools.cpp \
@@ -28,7 +27,11 @@ SOURCES += \
 	$$PWD/audio/AudioManager.cpp \
 	$$PWD/audio/Effect.cpp \
 	$$PWD/audio/Music.cpp \
-	$$PWD/input/InputManager.cpp
+        $$PWD/input/InputManager.cpp \
+        $$PWD/main.cpp\
+        $$PWD/mainwindow.cpp \
+        $$PWD/glwidget.cpp \
+        $$PWD/qtcolorbutton.cpp
 
 HEADERS += \
 	$$PWD/Scene.hpp \
@@ -43,18 +46,13 @@ HEADERS += \
 	$$PWD/audio/Effect.hpp \
 	$$PWD/audio/Music.hpp \
 	$$PWD/Math.hpp \
-	$$PWD/input/InputManager.hpp
+        $$PWD/input/InputManager.hpp \
+        $$PWD/mainwindow.hpp \
+        $$PWD/glwidget.h \
+        $$PWD/qtcolorbutton.h
 
-SOURCES += main.cpp\
-	mainwindow.cpp \
-	glwidget.cpp \
-	qtcolorbutton.cpp
-
-HEADERS  += mainwindow.hpp \
-	glwidget.h \
-	qtcolorbutton.h
-
-FORMS    += mainwindow.ui
+FORMS += \
+        $$PWD/mainwindow.ui
 
 RESOURCES += \
-    resources.qrc
+        $$PWD/resources.qrc
