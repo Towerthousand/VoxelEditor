@@ -77,7 +77,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 //Based on: Fast Voxel Traversal Algorithm for Ray Tracing
 //By: John Amanatides et al.
 //Implemented by Jordi "BuD" Santiago Provencio
-void Model::traceView(const vec3f &pos, const vec2f &rot, float tMax, float xMousePos, float yMousePos) {
+void Model::traceView(const vec3f &pos, float tMax, float xMousePos, float yMousePos) {
 	if (!getOutOfBounds(floor(pos.x),floor(pos.y),floor(pos.z)) &&
 		!getCube(floor(pos.x),floor(pos.y),floor(pos.z)).isAir) {
 		playerTargetsCube = true;
@@ -266,9 +266,8 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 	//STRUCTURE PER VERTEX: Vx,Vy,Vz,
 	//						Nx,Ny,Nz,
 	//						Cr,Cg,Cb,Ca
+	vec3f color = getCube(x,y,z).color;
 	if(getCube(x,y,z+1).isAir) { // front face
-		//if it's not a ID (ID should be fully lit) calculate the average of the adjacent
-		//air Cubes and assign max(max(average,adjacentCube.isAir/2),MINID)
 		lindA = (getCube(x,y,z+1).isAir + getCube(x,y+1,z+1).isAir +
 				 getCube(x-1,y,z+1).isAir + getCube(x-1,y+1,z+1).isAir)/4.0;
 		lindB = (getCube(x,y,z+1).isAir + getCube(x,y-1,z+1).isAir +
@@ -279,21 +278,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x+1,y,z+1).isAir + getCube(x+1,y+1,z+1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,0,1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,0,1, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,0,1, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,0,1, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,0,1, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,0,1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,0,1, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,0,1, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x    , y    , z+1.0, 0,0,1, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,0,1, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, 0,0,1, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,0,1, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,0,1, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z+1.0, 0,0,1, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,0,1, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, 0,0,1, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z+1.0, 0,0,1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 	if(getCube(x,y,z-1).isAir) { // back face
 		lindA = (getCube(x,y,z-1).isAir + getCube(x,y+1,z-1).isAir +
@@ -306,21 +305,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x-1,y,z-1).isAir + getCube(x-1,y+1,z-1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x    , y+1.0, z    , 0,0,-1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,0,-1, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , 0,0,-1, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,0,-1, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,0,-1, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z    , 0,0,-1, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,0,-1, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 0,0,-1, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x+1.0, y    , z    , 0,0,-1, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z    , 0,0,-1, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 0,0,-1, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , 0,0,-1, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x    , y    , z    , 0,0,-1, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z    , 0,0,-1, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , 0,0,-1, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , 0,0,-1, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+0.5, z    , 0,0,-1, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 	if(getCube(x+1,y,z).isAir) { // left face
 		lindA = (getCube(x+1,y,z).isAir + getCube(x+1,y+1,z).isAir +
@@ -333,21 +332,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x+1,y,z-1).isAir + getCube(x+1,y+1,z-1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 1,0,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 1,0,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 1,0,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x+1.0, y    , z    , 1,0,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 1,0,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 1,0,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 1,0,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z    , 1,0,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 1,0,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 1,0,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 1,0,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 1,0,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 1,0,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 1,0,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+0.5, z+0.5, 1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 	if(getCube(x-1,y,z).isAir) { // right face
 		lindA = (getCube(x-1,y,z).isAir + getCube(x-1,y+1,z).isAir +
@@ -360,21 +359,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x-1,y,z+1).isAir + getCube(x-1,y+1,z+1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, -1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z    , -1,0,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, -1,0,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , -1,0,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x    , y+1.0, z    , -1,0,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z    , -1,0,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , -1,0,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , -1,0,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x    , y    , z    , -1,0,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z+1.0, -1,0,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , -1,0,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, -1,0,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x    , y    , z+1.0, -1,0,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, -1,0,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, -1,0,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, -1,0,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+0.5, z+0.5, -1,0,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 	if(getCube(x,y-1,z).isAir) { // bottom face
 		lindA = (getCube(x,y-1,z).isAir + getCube(x+1,y-1,z).isAir +
@@ -387,21 +386,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x,y-1,z-1).isAir + getCube(x+1,y-1,z-1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x    , y    , z    , 0,-1,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z    , 0,-1,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , 0,-1,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 0,-1,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x+1.0, y    , z    , 0,-1,0, lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,-1,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z    , 0,-1,0, lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,-1,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,-1,0, lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z+1.0, 0,-1,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y    , z+1.0, 0,-1,0, lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, 0,-1,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x    , y    , z+1.0, 0,-1,0, lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y    , z    , 0,-1,0, lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z+1.0, 0,-1,0, lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x    , y    , z    , 0,-1,0, lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y    , z+0.5, 0,-1,0, lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 	if(getCube(x,y+1,z).isAir) { // top face
 		lindA = (getCube(x,y+1,z).isAir + getCube(x-1,y+1,z).isAir +
@@ -414,21 +413,21 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 				 getCube(x,y+1,z-1).isAir + getCube(x-1,y+1,z-1).isAir)/4.0;
 		lindE = (lindA+lindB+lindC+lindD)/4.0;
 		//t1
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,1,0 , lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z    , 0,1,0 , lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,1,0 , lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , 0,1,0 , lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t2
-		renderData.push_back(Vertex(x    , y+1.0, z    , 0,1,0 , lindD*getCube(x,y,z).color.x,lindD*getCube(x,y,z).color.y,lindD*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,1,0 , lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z    , 0,1,0 , lindD*color.x,lindD*color.y,lindD*color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,1,0 , lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t3
-		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,1,0 , lindA*getCube(x,y,z).color.x,lindA*getCube(x,y,z).color.y,lindA*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,1,0 , lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x    , y+1.0, z+1.0, 0,1,0 , lindA*color.x,lindA*color.y,lindA*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,1,0 , lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 		//t4
-		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,1,0 , lindB*getCube(x,y,z).color.x,lindB*getCube(x,y,z).color.y,lindB*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,1,0 , lindC*getCube(x,y,z).color.x,lindC*getCube(x,y,z).color.y,lindC*getCube(x,y,z).color.z,1.0));
-		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*getCube(x,y,z).color.x,lindE*getCube(x,y,z).color.y,lindE*getCube(x,y,z).color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z+1.0, 0,1,0 , lindB*color.x,lindB*color.y,lindB*color.z,1.0));
+		renderData.push_back(Vertex(x+1.0, y+1.0, z    , 0,1,0 , lindC*color.x,lindC*color.y,lindC*color.z,1.0));
+		renderData.push_back(Vertex(x+0.5, y+1.0, z+0.5, 0,1,0 , lindE*color.x,lindE*color.y,lindE*color.z,1.0));
 	}
 }
 

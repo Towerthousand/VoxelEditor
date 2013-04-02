@@ -1,6 +1,6 @@
 #include "Selection.hpp"
 
-Selection::Selection() : markedForRedraw(false), VBOID(2){
+Selection::Selection() : markedForRedraw(false), firstSelected(-1,-1,-1), secondSelected(-1,-1,-1), VBOID(2){
 }
 
 Selection::~Selection() {

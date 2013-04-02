@@ -51,8 +51,7 @@ void SceneMain::update(float deltaTime) {
 		fpsCount = 0;
 	}
 	world.update(deltaTime);
-	world.traceView(player.pos
-					,player.rot,
+	world.traceView(player.pos,
 					100000,
 					parent.input().lastMousePos.x,
 					parent.input().lastMousePos.y);
@@ -99,23 +98,31 @@ void SceneMain::onKeyPressed(float deltaTime, const Qt::Key& key) {
 
 void SceneMain::onKeyDown(float deltaTime, const Qt::Key &key) {
 	const float vel = 5.0f;
-	vec2f dir(sin(player.rot.y*DEG_TO_RAD), -cos(player.rot.y*DEG_TO_RAD));
+	float m[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, m);
+	vec3f	front(-m[2],-m[6],-m[10]),
+			side(m[0], m[4], m[8]);
+			//up(m[1], m[5], m[9]);
 	switch(key) {
 		case Qt::Key_W:
-			player.pos.x += dir.x*vel*deltaTime;
-			player.pos.z += dir.y*vel*deltaTime;
+			player.pos.x += front.x*vel*deltaTime;
+			player.pos.y += front.y*vel*deltaTime;
+			player.pos.z += front.z*vel*deltaTime;
 			break;
 		case Qt::Key_S:
-			player.pos.x += -dir.x*vel*deltaTime;
-			player.pos.z += -dir.y*vel*deltaTime;
-			break;
-		case Qt::Key_A:
-			player.pos.x += dir.y*vel*deltaTime;
-			player.pos.z += -dir.x*vel*deltaTime;
+			player.pos.x += -front.x*vel*deltaTime;
+			player.pos.y += -front.y*vel*deltaTime;
+			player.pos.z += -front.z*vel*deltaTime;
 			break;
 		case Qt::Key_D:
-			player.pos.x += -dir.y*vel*deltaTime;
-			player.pos.z += dir.x*vel*deltaTime;
+			player.pos.x += side.x*vel*deltaTime;
+			player.pos.y += side.y*vel*deltaTime;
+			player.pos.z += side.z*vel*deltaTime;
+			break;
+		case Qt::Key_A:
+			player.pos.x += -side.x*vel*deltaTime;
+			player.pos.y += -side.y*vel*deltaTime;
+			player.pos.z += -side.z*vel*deltaTime;
 			break;
 		case Qt::Key_Space:
 			player.pos.y += vel*deltaTime;
@@ -153,13 +160,19 @@ void SceneMain::onMouseButtonPressed(float deltaTime, const Qt::MouseButton& but
 			break;
 		case InputManager::SELECTION:
 			switch(button) {
-				case Qt::LeftButton: //delete Cube
+				case Qt::LeftButton: //select Cube
 					if(world.playerTargetsCube)
 						world.selection.addCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
 					break;
-				case Qt::RightButton: //place Cube
+				case Qt::MiddleButton: //unselect Cube
 					if(world.playerTargetsCube)
 						world.selection.deleteCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
+					break;
+				case Qt::RightButton: //select area
+					if(world.playerTargetsCube)
+						world.selection.firstSelected = world.targetedCube;
+					else
+						world.selection.firstSelected = vec3i(-1,-1,-1);
 					break;
 				default:
 					break;
@@ -188,7 +201,44 @@ void SceneMain::onMouseButtonDown(float deltaTime, const Qt::MouseButton& button
 }
 
 void SceneMain::onMouseButtonReleased(float deltaTime, const Qt::MouseButton& button) {
-	switch(button) {
+	switch (parent.input().mode) {
+		case InputManager::STANDARD:
+			break;
+		case InputManager::SELECTION:
+			switch(button) {
+				case Qt::RightButton: //select area
+				{
+					if(world.playerTargetsCube && world.selection.firstSelected != vec3i(-1,-1,-1)) {
+						world.selection.secondSelected = world.targetedCube;
+
+						vec3i disp(world.selection.secondSelected.x - world.selection.firstSelected.x,
+								   world.selection.secondSelected.y - world.selection.firstSelected.y,
+								   world.selection.secondSelected.z - world.selection.firstSelected.z);
+						if(disp.x)
+							disp.x /= std::abs(disp.x);
+						if(disp.y)
+							disp.y /= std::abs(disp.y);
+						if(disp.z)
+							disp.z /= std::abs(disp.z);
+						outLog(toString(disp.x) + " " + toString(disp.y) + " " + toString(disp.z));
+						for(int x = world.selection.firstSelected.x; x-disp.x != world.selection.secondSelected.x; x += disp.x)
+							for(int y = world.selection.firstSelected.y; y-disp.y != world.selection.secondSelected.y; y += disp.y)
+								for(int z = world.selection.firstSelected.z; z-disp.z != world.selection.secondSelected.z; z += disp.z) {
+									world.selection.addCube(x,y,z);
+								}
+						world.selection.markedForRedraw = true;
+					}
+
+					world.selection.firstSelected = vec3i(-1,-1,-1);
+					world.selection.secondSelected = vec3i(-1,-1,-1);
+					break;
+				}
+				default:
+					break;
+			}
+			break;
+		case InputManager::PAINT:
+			break;
 		default:
 			break;
 	}

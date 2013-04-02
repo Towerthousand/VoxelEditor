@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
-    <height>483</height>
+    <width>822</width>
+    <height>632</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -529,14 +529,14 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>74</width>
-     <height>100</height>
+     <width>100</width>
+     <height>200</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
      <width>74</width>
-     <height>100</height>
+     <height>200</height>
     </size>
    </property>
    <property name="styleSheet">
@@ -564,7 +564,7 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -809,6 +809,22 @@
        </item>
       </layout>
      </item>
+     <item>
+      <widget class="QWidget" name="toolOptions" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -817,7 +833,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>645</width>
+     <width>822</width>
      <height>25</height>
     </rect>
    </property>

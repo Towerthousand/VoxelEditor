@@ -16,7 +16,7 @@ class Model { //16*16*128
 		bool getOutOfBounds(int x, int y, int z) const;
 		Cube getCube(int x, int y, int z) const;
 		void setCube(int x, int y, int z, Cube c);
-		void traceView(const vec3f &pos, const vec2f &rot, float tMax, float xMousePos, float yMousepos);
+		void traceView(const vec3f &pos, float tMax, float xMousePos, float yMousepos);
 
 		//IO
 		bool saveVoxelization(std::string filePath);

@@ -19,6 +19,8 @@ class Selection
 		void makeVbo();
 
 		bool markedForRedraw;
+		vec3i firstSelected;
+		vec3i secondSelected;
 
 	private:
 		int VBOID;
