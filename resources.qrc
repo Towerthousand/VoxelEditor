@@ -1,12 +1,12 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>NewIcon.png</file>
-        <file>LoadIcon.png</file>
-        <file>ImportIcon.png</file>
-        <file>FolderIcon.png</file>
-        <file>ExportIcon.png</file>
-        <file>CubeIcon.png</file>
-        <file>SelectIcon.png</file>
-        <file>BucketIcon.png</file>
+        <file>resources/SelectIcon.png</file>
+        <file>resources/SaveIcon.png</file>
+        <file>resources/NewIcon.png</file>
+        <file>resources/ImportIcon.png</file>
+        <file>resources/FolderIcon.png</file>
+        <file>resources/ExportIcon.png</file>
+        <file>resources/CubeIcon.png</file>
+        <file>resources/BucketIcon.png</file>
     </qresource>
 </RCC>

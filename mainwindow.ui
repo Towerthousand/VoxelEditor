@@ -20,7 +20,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/icons/CubeIcon.png</normaloff>:/icons/CubeIcon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -607,7 +607,7 @@
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/CubeIcon.png</normaloff>:/icons/CubeIcon.png</iconset>
+           <normaloff>:/icons/resources/CubeIcon.png</normaloff>:/icons/resources/CubeIcon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -663,7 +663,7 @@
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/SelectIcon.png</normaloff>:/icons/SelectIcon.png</iconset>
+           <normaloff>:/icons/resources/SelectIcon.png</normaloff>:/icons/resources/SelectIcon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -726,7 +726,7 @@
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/BucketIcon.png</normaloff>:/icons/BucketIcon.png</iconset>
+           <normaloff>:/icons/resources/BucketIcon.png</normaloff>:/icons/resources/BucketIcon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -782,7 +782,7 @@
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/SelectIcon.png</normaloff>:/icons/SelectIcon.png</iconset>
+           <normaloff>:/icons/resources/CubeIcon.png</normaloff>:/icons/resources/CubeIcon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -839,7 +839,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/FolderIcon.png</normaloff>:/icons/FolderIcon.png</iconset>
+     <normaloff>:/icons/resources/FolderIcon.png</normaloff>:/icons/resources/FolderIcon.png</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -857,7 +857,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/NewIcon.png</normaloff>:/icons/NewIcon.png</iconset>
+     <normaloff>:/icons/resources/NewIcon.png</normaloff>:/icons/resources/NewIcon.png</iconset>
    </property>
    <property name="text">
     <string>New</string>
@@ -872,7 +872,7 @@
   <action name="actionImport">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/ImportIcon.png</normaloff>:/icons/ImportIcon.png</iconset>
+     <normaloff>:/icons/resources/ImportIcon.png</normaloff>:/icons/resources/ImportIcon.png</iconset>
    </property>
    <property name="text">
     <string>Import...</string>
@@ -887,7 +887,7 @@
   <action name="actionExport">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/ExportIcon.png</normaloff>:/icons/ExportIcon.png</iconset>
+     <normaloff>:/icons/resources/ExportIcon.png</normaloff>:/icons/resources/ExportIcon.png</iconset>
    </property>
    <property name="text">
     <string>Export...</string>
@@ -907,7 +907,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/LoadIcon.png</normaloff>:/icons/LoadIcon.png</iconset>
+     <normaloff>:/icons/resources/SaveIcon.png</normaloff>:/icons/resources/SaveIcon.png</iconset>
    </property>
    <property name="text">
     <string>Save</string>
