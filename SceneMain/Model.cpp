@@ -15,18 +15,22 @@ Model::~Model() {
 
 void Model::update(float deltaTime) {
 	//empty arrays and re-do them
-	markedForRedraw = false;
-	renderData.resize(0);
-	for(int x = 0; x < WORLDWIDTH; ++x) {
-		for(int y = 0; y < WORLDHEIGHT; ++y) {
-			for(int z = 0; z < WORLDDEPTH; ++z) {
-				if (!getCube(x,y,z).isAir) { // only draw if it's not air
-					pushCubeToArray(x,y,z);
+	if(markedForRedraw) {
+		selection.markedForRedraw = true;
+		markedForRedraw = false;
+		renderData.resize(0);
+		for(int x = 0; x < WORLDWIDTH; ++x) {
+			for(int y = 0; y < WORLDHEIGHT; ++y) {
+				for(int z = 0; z < WORLDDEPTH; ++z) {
+					if (!getCube(x,y,z).isAir) { // only draw if it's not air
+						pushCubeToArray(x,y,z);
+					}
 				}
 			}
 		}
+		makeVbo();
 	}
-	makeVbo();
+	selection.update(deltaTime);
 }
 
 void Model::draw() const {
@@ -47,14 +51,6 @@ void Model::draw() const {
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glPopMatrix();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	if(playerTargetsCube) {
-		drawWireCube(targetedCube.x,targetedCube.y,targetedCube.z);
-		if(!getOutOfBounds(last.x,last.y,last.z)) {
-			drawCube(last.x,last.y,last.z);
-			drawWireCube(last.x,last.y,last.z);
-		}
-	}
-	drawWorldBox();
 }
 
 bool Model::getOutOfBounds(int x, int y, int z) const {
@@ -245,12 +241,12 @@ void Model::paintCubePatch(int x, int y, int z, vec3f newColor) {
 	while(!nodes.empty()) {
 		vec3i curr = nodes.front();
 		nodes.pop();
-			processCubePaintBFS(curr, vec3i(1,0,0),lastColor,nodes);
-			processCubePaintBFS(curr, vec3i(-1,0,0),lastColor,nodes);
-			processCubePaintBFS(curr, vec3i(0,1,0),lastColor,nodes);
-			processCubePaintBFS(curr, vec3i(0,-1,0),lastColor,nodes);
-			processCubePaintBFS(curr, vec3i(0,0,1),lastColor,nodes);
-			processCubePaintBFS(curr, vec3i(0,0,-1),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(1,0,0),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(-1,0,0),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(0,1,0),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(0,-1,0),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(0,0,1),lastColor,nodes);
+		processCubePaintBFS(curr, vec3i(0,0,-1),lastColor,nodes);
 	}
 	markedForRedraw = true;
 }
@@ -269,7 +265,6 @@ void Model::pushCubeToArray(int x,int y, int z) { //I DON'T KNOW HOW TO MAKE THI
 	float lindA = 1.0,lindB = 1.0,lindC = 1.0,lindD = 1.0, lindE = 1.0;
 	//STRUCTURE PER VERTEX: Vx,Vy,Vz,
 	//						Nx,Ny,Nz,
-	//						Tx,Ty,
 	//						Cr,Cg,Cb,Ca
 	if(getCube(x,y,z+1).isAir) { // front face
 		//if it's not a ID (ID should be fully lit) calculate the average of the adjacent

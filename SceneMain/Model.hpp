@@ -1,6 +1,7 @@
 #ifndef CHUNK_HPP
 #define CHUNK_HPP
 #include "../tools.hpp"
+#include "SceneMain/Selection.hpp"
 
 class Camera;
 class Model { //16*16*128
@@ -26,18 +27,21 @@ class Model { //16*16*128
 		void paintCubePatch(int x, int y, int z, vec3f newColor); //paint this block and all the blocks adjacent that have the same block
 		void processCubePaintBFS(vec3i src, vec3i offset, vec3f lastColor, std::queue<vec3i>& nodes);
 
+		//drawers
+		void drawWireCube(int x, int y, int z) const;
+		void drawCube(int x, int y, int z) const;
+		void drawWorldBox() const;
+
 		bool markedForRedraw; //remake renderData on next update
 		bool playerTargetsCube; //is the view of the player colliding with a Cube that's not air?
 		vec3i targetedCube; //if playerTargetsCube, targetedCube = first Cube in player's view that is not air
 		vec3i last; //if playerTargetsCube, last = the Cube next to targetedCube at the face that the view ray entered
 		std::vector<std::vector<std::vector<Cube> > > cubes;
+		Selection selection;
+
 	private:
 		void pushCubeToArray(int x, int y, int z);
 		void makeVbo();
-		void drawWireCube(int x, int y, int z) const;
-		void drawCube(int x, int y, int z) const;
-		void drawWorldBox() const;
-
 		int VBOID;
 
 		std::vector<Vertex> renderData;

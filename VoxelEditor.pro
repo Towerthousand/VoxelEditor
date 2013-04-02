@@ -31,7 +31,8 @@ SOURCES += \
         $$PWD/main.cpp\
         $$PWD/mainwindow.cpp \
         $$PWD/glwidget.cpp \
-        $$PWD/qtcolorbutton.cpp
+        $$PWD/qtcolorbutton.cpp \
+        $$PWD/SceneMain/Selection.cpp
 
 HEADERS += \
 	$$PWD/Scene.hpp \
@@ -49,7 +50,8 @@ HEADERS += \
         $$PWD/input/InputManager.hpp \
         $$PWD/mainwindow.hpp \
         $$PWD/glwidget.h \
-        $$PWD/qtcolorbutton.h
+        $$PWD/qtcolorbutton.h \
+        $$PWD/SceneMain/Selection.hpp
 
 FORMS += \
         $$PWD/mainwindow.ui

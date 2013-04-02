@@ -41,6 +41,8 @@ bool SceneMain::init() {
 }
 
 void SceneMain::update(float deltaTime) {
+	if (parent.input().mode != InputManager::SELECTION)
+		world.selection.deleteAll();
 	++fpsCount;
 	debugCounter += deltaTime;
 	if (debugCounter > 1) {
@@ -48,8 +50,7 @@ void SceneMain::update(float deltaTime) {
 		debugCounter -= 1;
 		fpsCount = 0;
 	}
-	if(world.markedForRedraw)
-		world.update(deltaTime);
+	world.update(deltaTime);
 	world.traceView(player.pos
 					,player.rot,
 					100000,
@@ -75,6 +76,16 @@ void SceneMain::draw() const {
 
 	//draws here (openGL)
 	world.draw();
+	if(world.playerTargetsCube) {
+		world.drawWireCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
+		if(parent.input().mode == InputManager::STANDARD)
+			if(!world.getOutOfBounds(world.last.x,world.last.y,world.last.z)) {
+				world.drawWireCube(world.last.x,world.last.y,world.last.z);
+				world.drawCube(world.last.x,world.last.y,world.last.z);
+			}
+	}
+	world.selection.draw();
+	world.drawWorldBox();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glFlush();
 }
@@ -142,6 +153,14 @@ void SceneMain::onMouseButtonPressed(float deltaTime, const Qt::MouseButton& but
 			break;
 		case InputManager::SELECTION:
 			switch(button) {
+				case Qt::LeftButton: //delete Cube
+					if(world.playerTargetsCube)
+						world.selection.addCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
+					break;
+				case Qt::RightButton: //place Cube
+					if(world.playerTargetsCube)
+						world.selection.deleteCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
+					break;
 				default:
 					break;
 			}
