@@ -1,9 +1,9 @@
 #include "Game.hpp"
 
 //extern'd in tools.hpp
-int WORLDHEIGHT = 64;
-int WORLDWIDTH = 64;
-int WORLDDEPTH = 64;
+int WORLDHEIGHT = 1;
+int WORLDWIDTH = 1;
+int WORLDDEPTH = 1;
 int SCRHEIGHT = 0;
 int SCRWIDTH = 0;
 

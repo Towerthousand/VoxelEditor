@@ -19,9 +19,7 @@ bool SceneMain::init() {
 	if (!loadResources())
 		return false;
 
-	world.setCube(1,1,1,Cube(false,vec3f(1,0,0)));
-	world.setCube(1,2,1,Cube(false,vec3f(0,1,0)));
-	world.setCube(1,3,1,Cube(false,vec3f(0,0,1)));
+	world.setCube(0,0,0,Cube(false,vec3f(1,0,0)));
 	outLog("* Init was succesful" );
 
 	glEnable(GL_LIGHTING);

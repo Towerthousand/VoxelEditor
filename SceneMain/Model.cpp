@@ -68,8 +68,77 @@ Cube Model::getCube(int x, int y, int z) const {
 }
 
 void Model::setCube(int x, int y, int z, Cube c) {
-	if (getOutOfBounds(x,y,z))
-		return;
+	if (getOutOfBounds(x,y,z)) {
+		if (x < 0) {
+			WORLDWIDTH += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 1; i < WORLDWIDTH; ++i)
+				newCubes[i] = cubes[i-1];
+			cubes = newCubes;
+			x = 0;
+		}
+		else if (x > WORLDWIDTH-1) {
+			WORLDWIDTH += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH-1; ++i)
+				newCubes[i] = cubes[i];
+			cubes = newCubes;
+		}
+		else if (y < 0) {
+			WORLDHEIGHT += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 1; j < WORLDHEIGHT; ++j)
+					newCubes[i][j] = cubes[i][j];
+			cubes = newCubes;
+			y = 0;
+		}
+		else if (y > WORLDHEIGHT-1) {
+			WORLDHEIGHT += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT-1; ++j)
+					newCubes[i][j] = cubes[i][j];
+			cubes = newCubes;
+		}
+		else if (z < 0) {
+			WORLDDEPTH += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT-1; ++j)
+					for(int k = 1; k < WORLDDEPTH; ++k)
+						newCubes[i][j][k] = cubes[i][j][k];
+			cubes = newCubes;
+			z = 0;
+		}
+		else if (z > WORLDDEPTH-1) {
+			WORLDDEPTH += 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT-1; ++j)
+					for(int k = 0; k < WORLDDEPTH-1; ++k)
+						newCubes[i][j][k] = cubes[i][j][k];
+			cubes = newCubes;
+		}
+	}
 	markedForRedraw = true;
 	cubes[x][y][z] = c;
 }
