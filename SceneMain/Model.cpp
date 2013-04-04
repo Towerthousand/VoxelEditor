@@ -75,8 +75,8 @@ void Model::setCube(int x, int y, int z, Cube c) {
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
 					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
-			for(int i = 1; i < WORLDWIDTH; ++i)
-				newCubes[i] = cubes[i-1];
+			for(int i = 0; i < WORLDWIDTH-1; ++i)
+				newCubes[i+1] = cubes[i];
 			cubes = newCubes;
 			x = 0;
 		}
@@ -97,8 +97,8 @@ void Model::setCube(int x, int y, int z, Cube c) {
 					 (WORLDHEIGHT,std::vector<Cube>
 					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
-				for(int j = 1; j < WORLDHEIGHT; ++j)
-					newCubes[i][j] = cubes[i][j];
+				for(int j = 0; j < WORLDHEIGHT-1; ++j)
+					newCubes[i][j+1] = cubes[i][j];
 			cubes = newCubes;
 			y = 0;
 		}
@@ -120,9 +120,9 @@ void Model::setCube(int x, int y, int z, Cube c) {
 					 (WORLDHEIGHT,std::vector<Cube>
 					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
-				for(int j = 0; j < WORLDHEIGHT-1; ++j)
-					for(int k = 1; k < WORLDDEPTH; ++k)
-						newCubes[i][j][k] = cubes[i][j][k];
+				for(int j = 0; j < WORLDHEIGHT; ++j)
+					for(int k = 0; k < WORLDDEPTH-1; ++k)
+						newCubes[i][j][k+1] = cubes[i][j][k];
 			cubes = newCubes;
 			z = 0;
 		}
@@ -133,7 +133,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 					 (WORLDHEIGHT,std::vector<Cube>
 					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
-				for(int j = 0; j < WORLDHEIGHT-1; ++j)
+				for(int j = 0; j < WORLDHEIGHT; ++j)
 					for(int k = 0; k < WORLDDEPTH-1; ++k)
 						newCubes[i][j][k] = cubes[i][j][k];
 			cubes = newCubes;
