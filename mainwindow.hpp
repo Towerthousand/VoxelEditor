@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow {
 		void keyPressEvent(QKeyEvent *event);
 
 	private slots:
+
 		void on_r0_toggled(bool checked);
 		void on_r1_toggled(bool checked);
 		void on_r2_toggled(bool checked);
@@ -43,10 +44,13 @@ class MainWindow : public QMainWindow {
 
 		void on_paintModeButton_pressed();
 
-
 		void on_editModeButton_pressed();
 
 		void on_selectModeButton_pressed();
+
+		void on_pickModeButton_pressed();
+
+		void on_renderWindow_colorSet(const QColor &color, int option);
 
 	private:
 		Ui::MainWindow *ui;

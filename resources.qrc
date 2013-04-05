@@ -8,5 +8,6 @@
         <file>resources/ExportIcon.png</file>
         <file>resources/CubeIcon.png</file>
         <file>resources/BucketIcon.png</file>
+        <file>resources/PickerIcon.png</file>
     </qresource>
 </RCC>

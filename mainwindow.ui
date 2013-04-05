@@ -535,7 +535,7 @@
    </property>
    <property name="maximumSize">
     <size>
-     <width>74</width>
+     <width>100</width>
      <height>200</height>
     </size>
    </property>
@@ -752,7 +752,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="LOLWTF">
+        <widget class="QPushButton" name="pickModeButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -782,12 +782,12 @@
          </property>
          <property name="icon">
           <iconset resource="resources.qrc">
-           <normaloff>:/icons/resources/CubeIcon.png</normaloff>:/icons/resources/CubeIcon.png</iconset>
+           <normaloff>:/icons/resources/PickerIcon.png</normaloff>:/icons/resources/PickerIcon.png</iconset>
          </property>
          <property name="iconSize">
           <size>
-           <width>28</width>
-           <height>28</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
          <property name="checkable">
@@ -941,6 +941,7 @@
    <header>glwidget.h</header>
    <container>1</container>
    <slots>
+    <signal>colorSet(Qcolor,int)</signal>
     <slot>set1()</slot>
     <slot>set2()</slot>
     <slot>set0()</slot>
@@ -976,4 +977,7 @@
   <include location="resources.qrc"/>
  </resources>
  <connections/>
+ <slots>
+  <slot>changeColor(QColor,int)</slot>
+ </slots>
 </ui>

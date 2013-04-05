@@ -42,8 +42,12 @@ class InputManager {
 		enum editMode {
 			STANDARD = 0,
 			PAINT,
-			SELECTION
+			SELECTION,
+			PICK
 		};
+
+		bool colorHasChanged;
+		vec3f colorToChange;
 
 		editMode mode;
 };

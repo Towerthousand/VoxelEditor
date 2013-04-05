@@ -52,7 +52,6 @@ public:
 
     QColor color() const;
 
-public slots:
     void setColor(const QColor &color);
 
 signals:

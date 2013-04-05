@@ -2,7 +2,6 @@
 #include <QtOpenGL>
 #include <math.h>
 #include "glwidget.h"
-
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE 0x809D
 #endif
@@ -28,6 +27,13 @@ void GLWidget::initializeGL() {
 void GLWidget::paintGL() {
 	game.update(clock.restart().asSeconds());
 	game.draw();
+	if (game.input().colorHasChanged) {
+		emit colorSet(QColor(game.input().colorToChange.x,
+							 game.input().colorToChange.y,
+							 game.input().colorToChange.z),
+					  game.input().selectedColor);
+		game.input().colorHasChanged = false;
+	}
 }
 
 void GLWidget::resizeGL(int width, int height) {

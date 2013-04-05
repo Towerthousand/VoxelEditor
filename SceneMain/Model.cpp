@@ -14,6 +14,102 @@ Model::~Model() {
 }
 
 void Model::update(float deltaTime) {
+	bool empty = true;
+	while (empty) { //neg x
+		for(int i = 0; i < WORLDHEIGHT && empty; ++i)
+			for(int j = 0; j < WORLDDEPTH && empty; ++j)
+				if(!cubes[0][i][j].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDWIDTH -= 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				newCubes[i] = cubes[i+1];
+			cubes = newCubes;
+		}
+	}
+	empty = true;
+	while (empty) { //pos x
+		for(int i = 0; i < WORLDHEIGHT && empty; ++i)
+			for(int j = 0; j < WORLDDEPTH && empty; ++j)
+				if(!cubes[WORLDWIDTH-1][i][j].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDWIDTH -= 1;
+			cubes.resize(WORLDWIDTH);
+		}
+	}
+	empty = true;
+	while (empty) { //neg y
+		for(int i = 0; i < WORLDWIDTH && empty; ++i)
+			for(int j = 0; j < WORLDDEPTH && empty; ++j)
+				if(!cubes[i][0][j].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDHEIGHT -= 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT; ++j)
+					newCubes[i][j] = cubes[i][j+1];
+			cubes = newCubes;
+		}
+	}
+	empty = true;
+	while (empty) { //pos y
+		for(int i = 0; i < WORLDWIDTH && empty; ++i)
+			for(int j = 0; j < WORLDDEPTH && empty; ++j)
+				if(!cubes[i][WORLDHEIGHT-1][j].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDHEIGHT -= 1;
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				cubes[i].resize(WORLDHEIGHT);
+		}
+	}
+	empty = true;
+	while (empty) { //neg z
+		for(int i = 0; i < WORLDWIDTH && empty; ++i)
+			for(int j = 0; j < WORLDHEIGHT && empty; ++j)
+				if(!cubes[i][j][0].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDDEPTH -= 1;
+			std::vector<std::vector<std::vector<Cube> > > newCubes
+					(WORLDWIDTH,std::vector<std::vector<Cube> >
+					 (WORLDHEIGHT,std::vector<Cube>
+					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT; ++j)
+					for(int k = 0; k < WORLDDEPTH; ++k)
+						newCubes[i][j][k] = cubes[i][j][k+1];
+			cubes = newCubes;
+		}
+	}
+	empty = true;
+	while (empty) { //pos z
+		for(int i = 0; i < WORLDWIDTH && empty; ++i)
+			for(int j = 0; j < WORLDHEIGHT && empty; ++j)
+				if(!cubes[i][j][WORLDDEPTH-1].isAir) {
+					empty = false;
+				}
+		if(empty) {
+			WORLDDEPTH -= 1;
+			for(int i = 0; i < WORLDWIDTH; ++i)
+				for(int j = 0; j < WORLDHEIGHT; ++j)
+					cubes[i][j].resize(WORLDHEIGHT);
+		}
+	}
 	//empty arrays and re-do them
 	if(markedForRedraw) {
 		selection.markedForRedraw = true;
@@ -68,6 +164,8 @@ Cube Model::getCube(int x, int y, int z) const {
 }
 
 void Model::setCube(int x, int y, int z, Cube c) {
+	if(WORLDWIDTH == 1 && WORLDHEIGHT == 1 && WORLDDEPTH == 1 && c.isAir == true)
+		return;
 	if (getOutOfBounds(x,y,z)) {
 		if (x < 0) {
 			WORLDWIDTH += 1;

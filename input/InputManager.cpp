@@ -4,7 +4,7 @@ InputManager::InputManager() :
 	lastMousePos(0,0), mouseDisplacement(0,0), focus(false),
 	colors(12,vec3f(0,0,0)), selectedColor(0),
 	saveFileString(""), openFileString(""), importFileString(""),
-	exportFileString(""), mode(STANDARD){ //12 is the number of color buttons
+	exportFileString(""), colorHasChanged(false), mode(STANDARD){ //12 is the number of color buttons
 }
 
 InputManager::~InputManager() {

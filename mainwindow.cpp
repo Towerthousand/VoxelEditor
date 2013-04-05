@@ -111,8 +111,8 @@ void MainWindow::on_c9_colorChanged(const QColor& c) {
 
 void MainWindow::on_actionOpen_triggered() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-													 "",
-													 tr("Files (*.vox*)"));
+													"",
+													tr("Files (*.vox*)"));
 	ui->renderWindow->game.input().openFileString = fileName.toStdString();
 }
 
@@ -133,4 +133,48 @@ void MainWindow::on_editModeButton_pressed() {
 
 void MainWindow::on_selectModeButton_pressed() {
 	ui->renderWindow->game.input().mode = InputManager::SELECTION;
+}
+
+void MainWindow::on_pickModeButton_pressed() {
+	ui->renderWindow->game.input().mode = InputManager::PICK;
+}
+
+void MainWindow::on_renderWindow_colorSet(const QColor &color, int option) {
+	switch (option) {
+		case 0:
+			ui->c0->setColor(color);
+			break;
+		case 1:
+			ui->c1->setColor(color);
+			break;
+		case 2:
+			ui->c2->setColor(color);
+			break;
+		case 3:
+			ui->c3->setColor(color);
+			break;
+		case 4:
+			ui->c4->setColor(color);
+			break;
+		case 5:
+			ui->c5->setColor(color);
+			break;
+		case 6:
+			ui->c6->setColor(color);
+			break;
+		case 7:
+			ui->c7->setColor(color);
+			break;
+		case 8:
+			ui->c8->setColor(color);
+			break;
+		case 9:
+			ui->c9->setColor(color);
+			break;
+		default:
+			break;
+	}
+	ui->renderWindow->game.input().colors[option] = vec3f(float(color.red())/255.0,
+														  float(color.green())/255.0,
+														  float(color.blue())/255.0);
 }

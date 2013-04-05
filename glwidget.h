@@ -14,6 +14,9 @@ class GLWidget : public QGLWidget {
 		void setColor(const QColor &color, int option);
 		Game game;
 
+	signals:
+		void colorSet(const QColor &color, int index);
+
 	protected:
 		void initializeGL();
 		void paintGL();

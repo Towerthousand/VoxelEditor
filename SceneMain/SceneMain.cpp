@@ -1,5 +1,6 @@
 #include "SceneMain.hpp"
 #include "Game.hpp"
+#include <Qt>
 
 SceneMain::SceneMain(Game &parent) :
 	Scene(parent),
@@ -75,8 +76,7 @@ void SceneMain::draw() const {
 	world.draw();
 	if(world.playerTargetsCube) {
 		world.drawWireCube(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z);
-		if(parent.input().mode == InputManager::STANDARD)
-			if(!world.getOutOfBounds(world.last.x,world.last.y,world.last.z)) {
+		if(parent.input().mode == InputManager::STANDARD) {
 				world.drawWireCube(world.last.x,world.last.y,world.last.z);
 				world.drawCube(world.last.x,world.last.y,world.last.z);
 			}
@@ -181,6 +181,23 @@ void SceneMain::onMouseButtonPressed(float deltaTime, const Qt::MouseButton& but
 				case Qt::LeftButton: //paint batch
 					if(world.playerTargetsCube)
 						world.paintCubePatch(world.targetedCube.x,world.targetedCube.y,world.targetedCube.z,parent.input().colors[parent.input().selectedColor]);
+					break;
+				default:
+					break;
+			}
+			break;
+		case InputManager::PICK:
+			switch(button) {
+				case Qt::LeftButton: //paint batch
+					if(world.playerTargetsCube) {
+						parent.input().colorHasChanged = true;
+						parent.input().colorToChange = world.getCube(world.targetedCube.x,
+																	 world.targetedCube.y,
+																	 world.targetedCube.z).color;
+						parent.input().colorToChange.x = parent.input().colorToChange.x*255;
+						parent.input().colorToChange.y = parent.input().colorToChange.y*255;
+						parent.input().colorToChange.z = parent.input().colorToChange.z*255;
+					}
 					break;
 				default:
 					break;
