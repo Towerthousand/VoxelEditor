@@ -170,6 +170,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 		if (x < 0) {
 			WORLDWIDTH += 1;
 			std::vector<std::vector<std::vector<Cube> > > newCubes
+
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
 					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
@@ -183,7 +184,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 			std::vector<std::vector<std::vector<Cube> > > newCubes
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
-					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+					  (WORLDDEPTH,Cube(true,vec3f(1,1,1)))));
 			for(int i = 0; i < WORLDWIDTH-1; ++i)
 				newCubes[i] = cubes[i];
 			cubes = newCubes;
@@ -193,7 +194,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 			std::vector<std::vector<std::vector<Cube> > > newCubes
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
-					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+					  (WORLDDEPTH,Cube(true,vec3f(1,1,1)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
 				for(int j = 0; j < WORLDHEIGHT-1; ++j)
 					newCubes[i][j+1] = cubes[i][j];
@@ -205,7 +206,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 			std::vector<std::vector<std::vector<Cube> > > newCubes
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
-					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+					  (WORLDDEPTH,Cube(true,vec3f(1,1,1)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
 				for(int j = 0; j < WORLDHEIGHT-1; ++j)
 					newCubes[i][j] = cubes[i][j];
@@ -216,7 +217,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 			std::vector<std::vector<std::vector<Cube> > > newCubes
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
-					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+					  (WORLDDEPTH,Cube(true,vec3f(1,1,1)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
 				for(int j = 0; j < WORLDHEIGHT; ++j)
 					for(int k = 0; k < WORLDDEPTH-1; ++k)
@@ -229,7 +230,7 @@ void Model::setCube(int x, int y, int z, Cube c) {
 			std::vector<std::vector<std::vector<Cube> > > newCubes
 					(WORLDWIDTH,std::vector<std::vector<Cube> >
 					 (WORLDHEIGHT,std::vector<Cube>
-					  (WORLDDEPTH,Cube(true,vec3f(0,0,0)))));
+					  (WORLDDEPTH,Cube(true,vec3f(1,1,1)))));
 			for(int i = 0; i < WORLDWIDTH; ++i)
 				for(int j = 0; j < WORLDHEIGHT; ++j)
 					for(int k = 0; k < WORLDDEPTH-1; ++k)
@@ -340,7 +341,7 @@ bool Model::saveVoxelization(std::string filePath) {
 		outLog("#ERROR Could not save voxelization \"" + filePath + "\"");
 		return false;
 	}
-	CubeFileFormat c(Cube(false,vec3f(0,0,0)));
+	CubeFileFormat c(Cube(false,vec3f(1,0,0)));
 	int ww,wh,wd;
 	ww = WORLDWIDTH;
 	wh = WORLDHEIGHT;

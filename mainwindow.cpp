@@ -117,9 +117,11 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionSave_triggered() {
+	QFileDialog::setDefaultSuffix("vox");
 	QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
 													"",
 													tr("Files (*.vox*)"));
+	qDebug() << fileName;
 	ui->renderWindow->game.input().saveFileString = fileName.toStdString();
 }
 
